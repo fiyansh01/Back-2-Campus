@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Back-2-Campus | AI Skill Verification</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+    <div id="app-container">
+        <div id="toast" class="toast hidden"></div>
+
+        <nav id="main-nav" class="hidden">
+            <div class="nav-content">
+                <div class="logo" onclick="app.navigateTo('dashboard')">
+                    <i data-lucide="shield-check"></i> <span>Back-2-Campus</span>
+                </div>
+                <div class="nav-actions">
+                    <span class="user-badge" id="user-display">Student Mode</span>
+                    <button class="icon-btn" onclick="app.logout()"><i data-lucide="log-out"></i></button>
+                </div>
+            </div>
+        </nav>
+
+        <section id="view-landing" class="view active">
+            <div class="hero">
+                <div class="badge">Powered by Gemini AI</div>
+                <h1>Prove Your Skills.<br><span class="text-gradient">Build Your Future.</span></h1>
+                <p>Move beyond resumes. Use AI-driven evidence verification to unlock mentorship and global career opportunities.</p>
+                <div class="cta-group">
+                    <button class="btn btn-primary btn-glow" onclick="app.navigateTo('login')">Get Started</button>
+                    <button class="btn btn-secondary" onclick="app.navigateTo('login')">Try SkillTwin™</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-login" class="view">
+            <div class="auth-container">
+                <div class="glass-card auth-card">
+                    <h2>Welcome to the Future</h2>
+                    <p>Select your portal to continue</p>
+                    <div class="auth-options">
+                        <button class="option-btn" onclick="app.login('student')">
+                            <i data-lucide="graduation-cap"></i>
+                            <span>Continue as Student</span>
+                        </button>
+                        <button class="option-btn" onclick="app.login('mentor')">
+                            <i data-lucide="briefcase"></i>
+                            <span>Continue as Mentor</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-dashboard" class="view">
+            <div class="dashboard-grid">
+                <div class="dash-card glass-card" onclick="app.navigateTo('evaluate')">
+                    <div class="icon-box blue"><i data-lucide="fingerprint"></i></div>
+                    <h3>Skill Evaluation</h3>
+                    <p>Verify your technical projects via Gemini AI.</p>
+                </div>
+                <div class="dash-card glass-card" onclick="app.navigateTo('skilltwin')">
+                    <div class="icon-box purple"><i data-lucide="zap"></i></div>
+                    <h3>SkillTwin™</h3>
+                    <p>Visualize your 90-day future skill growth.</p>
+                </div>
+                <div class="dash-card glass-card" onclick="app.navigateTo('roadmap')">
+                    <div class="icon-box green"><i data-lucide="map"></i></div>
+                    <h3>Career Roadmap</h3>
+                    <p>Your personalized AI-generated learning path.</p>
+                </div>
+                <div class="dash-card glass-card" onclick="app.navigateTo('mentors')">
+                    <div class="icon-box orange"><i data-lucide="users"></i></div>
+                    <h3>Mentor Matching</h3>
+                    <p>Connect with experts based on verified skills.</p>
+                </div>
+                <div class="dash-card glass-card" onclick="app.navigateTo('webinars')">
+                    <div class="icon-box red"><i data-lucide="play-circle"></i></div>
+                    <h3>Global Webinars</h3>
+                    <p>AI-Dubbed industry sessions in real-time.</p>
+                </div>
+                <div class="dash-card glass-card" onclick="app.navigateTo('wellbeing')">
+                    <div class="icon-box teal"><i data-lucide="smile"></i></div>
+                    <h3>Wellbeing Agent</h3>
+                    <p>Monitor burnout and get AI support.</p>
+                </div>
+                <div class="dash-card glass-card" onclick="app.navigateTo('scanner')">
+                    <div class="icon-box gray"><i data-lucide="maximize"></i></div>
+                    <h3>SkillScanner™</h3>
+                    <p>Offline credential sync for remote areas.</p>
+                </div>
+                <div class="dash-card glass-card" onclick="app.navigateTo('insights')">
+                    <div class="icon-box indigo"><i data-lucide="bar-chart-3"></i></div>
+                    <h3>University Insights</h3>
+                    <p>Analytics on campus skill-gap trends.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-evaluate" class="view">
+            <div class="page-header">
+                <button class="back-btn" onclick="app.navigateTo('dashboard')"><i data-lucide="arrow-left"></i></button>
+                <h2>Skill Passport</h2>
+            </div>
+            <div class="glass-card content-card">
+                <div id="eval-input-area">
+                    <h3>Analyze New Project</h3>
+                    <p>Paste GitHub URL or upload project documentation</p>
+                    <textarea placeholder="e.g. Developed a Decentralized Finance dashboard using React and Solidity..."></textarea>
+                    <button class="btn btn-primary full-width" onclick="app.runEvaluation()">Analyze with Gemini AI</button>
+                </div>
+                <div id="eval-loader" class="hidden">
+                    <div class="loader-ring"></div>
+                    <p>Gemini is reasoning through your logic...</p>
+                </div>
+                <div id="eval-results" class="hidden">
+                    <div class="score-display">
+                        <div class="score-num" id="passport-score">0</div>
+                        <span>Skill Score</span>
+                    </div>
+                    <div class="result-stats">
+                        <div class="stat-item"><strong>Level:</strong> <span id="res-level">Advanced</span></div>
+                        <div class="stat-item"><strong>Confidence:</strong> <span id="res-conf">98%</span></div>
+                    </div>
+                    <div class="skill-chips" id="res-chips"></div>
+                    <p class="ai-insight" id="res-text"></p>
+                    <div class="btn-group">
+                        <button class="btn btn-secondary" onclick="app.navigateTo('skilltwin')">Sync to SkillTwin</button>
+                        <button class="btn btn-primary" onclick="app.navigateTo('mentors')">Match Mentors</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-skilltwin" class="view">
+            <div class="page-header">
+                <button class="back-btn" onclick="app.navigateTo('dashboard')"><i data-lucide="arrow-left"></i></button>
+                <h2>SkillTwin™ <small>(90 Day Projection)</small></h2>
+            </div>
+            <div class="glass-card twin-card">
+                <div class="readiness-circle">
+                    <div class="percent">84%</div>
+                    <div class="label">Job Ready</div>
+                </div>
+                <div class="growth-tracks">
+                    <div class="track">
+                        <label>30 Days: Fullstack Mastery</label>
+                        <div class="bar-bg"><div class="bar-fill" style="width: 45%;"></div></div>
+                    </div>
+                    <div class="track">
+                        <label>60 Days: System Design</label>
+                        <div class="bar-bg"><div class="bar-fill" style="width: 70%;"></div></div>
+                    </div>
+                    <div class="track">
+                        <label>90 Days: Cloud Architecture</label>
+                        <div class="bar-bg"><div class="bar-fill" style="width: 95%;"></div></div>
+                    </div>
+                </div>
+                <div class="ai-box">
+                    <i data-lucide="sparkles"></i>
+                    <p>"Vertex AI predicts you will be eligible for Senior Dev roles by August if you complete the Kafka module."</p>
+                </div>
+                <button class="btn btn-primary full-width mt-2" onclick="app.navigateTo('roadmap')">Generate Career Roadmap</button>
+            </div>
+        </section>
+
+        <section id="view-roadmap" class="view">
+            <div class="page-header">
+                <button class="back-btn" onclick="app.navigateTo('dashboard')"><i data-lucide="arrow-left"></i></button>
+                <h2>Your Career Roadmap</h2>
+            </div>
+            <div class="roadmap-stack">
+                <div class="road-step glass-card active">
+                    <div class="step-num">Week 1</div>
+                    <h4>Optimize Performance</h4>
+                    <p>Master React Profiler and Memoization</p>
+                    <div class="progress-container"><div class="progress-bar" style="width: 80%;"></div></div>
+                </div>
+                <div class="road-step glass-card">
+                    <div class="step-num">Week 2</div>
+                    <h4>Scalable Backends</h4>
+                    <p>Implement Redis Caching and Webhooks</p>
+                    <div class="progress-container"><div class="progress-bar" style="width: 15%;"></div></div>
+                </div>
+                <div class="road-step glass-card">
+                    <div class="step-num">Week 3</div>
+                    <h4>Final Deployment</h4>
+                    <p>Dockerize and Deploy to Google Cloud Run</p>
+                    <div class="progress-container"><div class="progress-bar" style="width: 0%;"></div></div>
+                </div>
+            </div>
+            <button class="btn btn-secondary full-width mt-2" onclick="app.navigateTo('mentors')">Meet Expert Mentor</button>
+        </section>
+
+        <section id="view-mentors" class="view">
+            <div class="page-header">
+                <button class="back-btn" onclick="app.navigateTo('dashboard')"><i data-lucide="arrow-left"></i></button>
+                <h2>Expert Mentor Matches</h2>
+            </div>
+            <div id="mentor-list" class="grid-2">
+                </div>
+        </section>
+
+        <section id="view-webinars" class="view">
+            <div class="page-header">
+                <button class="back-btn" onclick="app.navigateTo('dashboard')"><i data-lucide="arrow-left"></i></button>
+                <h2>Global Learning Hub</h2>
+            </div>
+            <div class="glass-card webinar-card">
+                <div class="video-placeholder">
+                    <i data-lucide="play" class="play-icon"></i>
+                </div>
+                <div class="webinar-meta">
+                    <h3>Deep Dive: Serverless on GCP</h3>
+                    <p>Live from Zurich Headquaters</p>
+                    <div class="dubbing-badge">AI-Dubbed using Gemini</div>
+                    <select class="language-select">
+                        <option>English</option>
+                        <option>Hindi</option>
+                        <option>Tamil</option>
+                        <option>Spanish</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-wellbeing" class="view">
+            <div class="page-header">
+                <button class="back-btn" onclick="app.navigateTo('dashboard')"><i data-lucide="arrow-left"></i></button>
+                <h2>Wellbeing Agent</h2>
+            </div>
+            <div class="glass-card wellbeing-card">
+                <div class="burnout-ui">
+                    <div class="meter"><div class="needle" style="transform: rotate(40deg);"></div></div>
+                    <p>Burnout Risk: <strong>Low</strong></p>
+                </div>
+                <div class="mood-tracker">
+                    <p>Current Mood Trend: <span class="green-text">Productive</span></p>
+                </div>
+                <p class="ai-box">"You've been coding for 4 hours. Gemini recommends a 15-minute screen break to maintain cognitive clarity."</p>
+                <button class="btn btn-secondary full-width" onclick="app.toast('Mood profile updated.')">Check Again</button>
+            </div>
+        </section>
+
+        <section id="view-scanner" class="view">
+            <div class="page-header">
+                <button class="back-btn" onclick="app.navigateTo('dashboard')"><i data-lucide="arrow-left"></i></button>
+                <h2>SkillScanner™ <small>(Offline)</small></h2>
+            </div>
+            <div class="glass-card scanner-card">
+                <div id="scanner-visual" class="scanner-box">
+                    <div class="scanner-line"></div>
+                    <i data-lucide="scan"></i>
+                </div>
+                <button id="scan-btn" class="btn btn-primary full-width mt-2" onclick="app.runScan()">Scan Document</button>
+                <div id="scan-results-area" class="hidden mt-2">
+                    <p class="small">Extracted Skills:</p>
+                    <div class="skill-chips">
+                        <span class="chip neon">Python</span>
+                        <span class="chip neon">TensorFlow</span>
+                    </div>
+                    <p class="offline-badge"><i data-lucide="wifi-off"></i> Offline Mode — Syncing to Firestore...</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-insights" class="view">
+            <div class="page-header">
+                <button class="back-btn" onclick="app.navigateTo('dashboard')"><i data-lucide="arrow-left"></i></button>
+                <h2>University Analytics</h2>
+            </div>
+            <div class="dashboard-grid">
+                <div class="glass-card stat-card">
+                    <h3>Skill Gap</h3>
+                    <p>Campus lacks 40% in Cloud Security proficiency.</p>
+                </div>
+                <div class="glass-card stat-card">
+                    <h3>Top Skills</h3>
+                    <ol>
+                        <li>React.js</li>
+                        <li>Python</li>
+                        <li>UI/UX</li>
+                    </ol>
+                </div>
+                <div class="glass-card stat-card">
+                    <h3>Engagement</h3>
+                    <p>85% Mentor sessions completed successfully.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-mentor-dash" class="view">
+            <div class="page-header">
+                <h2>Expert Dashboard</h2>
+            </div>
+            <div class="mentor-content">
+                <div class="glass-card mb-2">
+                    <h3>Incoming Requests</h3>
+                    <div class="request-item">
+                        <div class="req-info">
+                            <strong>Rahul Sharma</strong>
+                            <span>Verified in Flutter</span>
+                        </div>
+                        <button class="btn btn-primary sm" onclick="app.toast('Session Accepted')">Accept</button>
+                    </div>
+                </div>
+                <div class="glass-card">
+                    <h3>Expertise Tags</h3>
+                    <div class="skill-chips">
+                        <span class="chip">Google Cloud</span>
+                        <span class="chip">Node.js</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>Powered by <strong>Google Cloud & Gemini AI</strong></p>
+            <div class="cloud-stack">
+                <span>Gemini API</span> • <span>Vertex AI</span> • <span>Firebase</span> • <span>Cloud Run</span>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
